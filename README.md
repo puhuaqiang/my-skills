@@ -7,6 +7,7 @@
 | Skill                       | 描述                                                   | 路径          |
 | --------------------------- | ------------------------------------------------------ | ------------- |
 | [svg-to-png](./svg-to-png/) | 将 SVG 文件转换为 PNG 格式，支持自动尺寸检测和高清输出 | `svg-to-png/` |
+| [mt2zh](./mt2zh/)           | 使用 AI 翻译 PDF 文档，支持批量处理和双语/译文模式     | `mt2zh/`      |
 
 ## 🚀 快速开始
 
@@ -53,13 +54,6 @@ my-skills/
 
 将 SVG 矢量图形转换为 PNG 位图，支持自动检测 SVG 原生尺寸、高清/Retina 缩放和自定义输出参数。
 
-**主要功能：**
-
-- 自动读取 SVG 的 width/height/viewBox 属性
-- 支持 2x/3x/4x 高清缩放
-- 保持宽高比或自定义尺寸
-- 命令行和 Python API 两种使用方式
-
 **快速使用：**
 
 ```bash
@@ -74,6 +68,48 @@ uv run svg-to-png/scripts/svg2png.py input.svg -w 512 -H 512
 ```
 
 [查看完整文档 →](./svg-to-png/SKILL.md)
+
+### mt2zh
+
+使用 `pdf2zh`（v1.9.11，即原 pdf2zh-next）和 OpenAI 兼容 API 翻译 PDF 文档。支持单个文件翻译、批量目录翻译、双语/仅译文输出模式，以及多线程并发处理。
+
+**环境变量：**
+
+| 变量 | 说明 |
+|------|------|
+| `MT_API_KEY` | OpenAI API Key（必填） |
+| `MT_BASE_URL` | OpenAI API 地址（必填） |
+| `MT_MODEL` | 模型名称（可选，默认 `qwen-plus`） |
+
+**快速使用：**
+
+```bash
+# 翻译单个 PDF（自动检测源语言，目标语言为中文，生成 -mono 和 -dual 两个文件）
+uv run mt2zh/scripts/translate.py document.pdf
+
+# 批量翻译目录下所有 PDF
+uv run mt2zh/scripts/translate.py ./docs --dir
+
+# 仅保留译文（删除双语文件）
+uv run mt2zh/scripts/translate.py doc.pdf --mode mono
+
+# 仅保留双语对照（删除纯译文文件）
+uv run mt2zh/scripts/translate.py doc.pdf --mode dual
+
+# 使用系统全部核心加速
+uv run mt2zh/scripts/translate.py ./documents --dir --threads auto
+
+# 指定源语言和目标语言
+uv run mt2zh/scripts/translate.py doc.pdf --lang-in en --lang-out zh
+
+# 指定输出目录
+uv run mt2zh/scripts/translate.py doc.pdf --output ./output
+
+# 覆盖模型（不修改环境变量）
+uv run mt2zh/scripts/translate.py doc.pdf --model qwen-max
+```
+
+[查看完整文档 →](./mt2zh/SKILL.md)
 
 ---
 
