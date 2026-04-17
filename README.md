@@ -4,10 +4,11 @@
 
 ## 📦 已收录 Skills
 
-| Skill                       | 描述                                                   | 路径          |
-| --------------------------- | ------------------------------------------------------ | ------------- |
-| [svg-to-png](./svg-to-png/) | 将 SVG 文件转换为 PNG 格式，支持自动尺寸检测和高清输出 | `svg-to-png/` |
-| [mt2zh](./mt2zh/)           | 使用 AI 翻译 PDF 文档，支持批量处理和双语/译文模式     | `mt2zh/`      |
+| Skill                           | 描述                                                       | 路径              |
+| ------------------------------- | ---------------------------------------------------------- | ----------------- |
+| [svg-to-png](./svg-to-png/)     | 将 SVG 文件转换为 PNG 格式，支持自动尺寸检测和高清输出     | `svg-to-png/`     |
+| [mt2zh](./mt2zh/)               | 使用 AI 翻译 PDF 文档，支持批量处理和双语/译文模式         | `mt2zh/`          |
+| [cmake-version-gen](./cmake-version-gen/) | 为 CMake C++ 项目自动生成版本头文件和 version.txt          | `cmake-version-gen/` |
 
 ## 🚀 快速开始
 
@@ -35,12 +36,19 @@ kimi config set skills ~/.config/agents/skills
 
 ```
 my-skills/
-├── README.md           # 本文件
-├── svg-to-png/         # SVG 转 PNG 工具
-│   ├── SKILL.md        # Skill 定义和使用文档
+├── README.md               # 本文件
+├── svg-to-png/             # SVG 转 PNG 工具
+│   ├── SKILL.md            # Skill 定义和使用文档
 │   └── scripts/
-│       └── svg2png.py  # 转换脚本
-└── ...                 # 更多 skills 即将到来
+│       └── svg2png.py      # 转换脚本
+├── mt2zh/                  # PDF 翻译工具
+│   ├── SKILL.md
+│   └── scripts/
+│       └── translate.py
+└── cmake-version-gen/      # CMake 版本生成工具
+    ├── SKILL.md
+    └── GenerateVersion.cmake
+└── ...                     # 更多 skills 即将到来
 ```
 
 每个 skill 目录包含：
@@ -110,6 +118,37 @@ uv run mt2zh/scripts/translate.py doc.pdf --model qwen-max
 ```
 
 [查看完整文档 →](./mt2zh/SKILL.md)
+
+### cmake-version-gen
+
+为 CMake C++ 项目注入自动版本生成模块，从 `project(VERSION x.y.z)`、Git 仓库和构建时间中提取版本信息，生成 C++ 头文件和 `version.txt`。
+
+**快速使用：**
+
+在 Kimi CLI 中直接调用 skill：
+
+```bash
+# 自动检测并部署版本生成模块
+kimi skill cmake-version-gen
+```
+
+部署后，根 `CMakeLists.txt` 中会自动包含类似配置：
+
+```cmake
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+include(GenerateVersion)
+generate_version_info(
+    PREFIX "MY_PROJECT"
+    OUTPUT_DIR "${CMAKE_BINARY_DIR}/generated"
+    OUTPUT_HEADER "${CMAKE_BINARY_DIR}/generated/my_project_version.h"
+    OUTPUT_TXT "${CMAKE_BINARY_DIR}/version.txt"
+)
+set(MY_PROJECT_GENERATED_DIR "${CMAKE_BINARY_DIR}/generated")
+```
+
+子模块通过 `target_include_directories(PRIVATE "${MY_PROJECT_GENERATED_DIR}")` 引入版本头文件即可使用。
+
+[查看完整文档 →](./cmake-version-gen/SKILL.md)
 
 ---
 
